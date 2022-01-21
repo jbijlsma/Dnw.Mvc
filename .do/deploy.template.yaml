@@ -2,7 +2,7 @@ spec:
  name: mvc
  services:
  - name: mvc
-   dockerfile_path: Dockerfile
+   dockerfile_path: DockerfileLinux-musl-x64
    http_port: 80
    git:
      branch: master
