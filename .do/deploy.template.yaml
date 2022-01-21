@@ -1,0 +1,9 @@
+spec:
+ name: mvc
+ services:
+ - name: mvc
+   dockerfile_path: Dockerfile
+   http_port: 80
+   git:
+     branch: master
+     repo_clone_url: https://github.com/dnw2022/mvc.git
