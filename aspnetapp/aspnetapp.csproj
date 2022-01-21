@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RuntimeIdentifiers>linux-musl-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>linux-musl-arm64;linux-musl-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
