@@ -13,20 +13,25 @@
       steps:
         - name: Checkout files
           uses: actions/checkout@v2
-
-        - name: Install doctl
-          uses: digitalocean/action-doctl@v2
-          with:
-            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-            
-        - name: Login to Digital Ocean Registry
-          run: doctl registry login --expiry-seconds 600    
-            
-        - name: Build latest
-          run: docker build -t registry.digitalocean.com/dnw/mvc:latest .
-  
-        - name: Push to Digital Ocean Registry
-          run: docker push registry.digitalocean.com/dnw/mvc:latest
-
-        - name: Redeploy app
-          run: doctl apps create --spec ./deploy/deploy.yml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
+          
+        - name: List files
+          run: |
+            pwd
+            ls -la
+#
+#        - name: Install doctl
+#          uses: digitalocean/action-doctl@v2
+#          with:
+#            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+#            
+#        - name: Login to Digital Ocean Registry
+#          run: doctl registry login --expiry-seconds 600    
+#            
+#        - name: Build latest
+#          run: docker build -t registry.digitalocean.com/dnw/mvc:latest .
+#  
+#        - name: Push to Digital Ocean Registry
+#          run: docker push registry.digitalocean.com/dnw/mvc:latest
+#
+#        - name: Redeploy app
+#          run: doctl apps create --spec ./deploy/deploy.yml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
