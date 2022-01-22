@@ -1,0 +1,32 @@
+  name: Build and deploy
+  
+  on:
+    push:
+      branches:
+        - master
+        
+  jobs:
+    build:
+      
+      runs-on: ubuntu-latest
+      
+      steps:
+        - name: Checkout files
+          uses: actions/checkout@v2
+
+        - name: Install doctl
+          uses: digitalocean/action-doctl@v2
+          with:
+            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+            
+        - name: Login to Digital Ocean Registry
+          run: doctl registry login --expiry-seconds 600    
+            
+        - name: Build latest
+          run: docker build -t registry.digitalocean.com/dnw/mvc:latest .
+  
+        - name: Push to Digital Ocean Registry
+          run: docker push registry.digitalocean.com/myregistry/mvc:latest
+
+        - name: Provision Droplet and deploy container
+          run: doctl apps create --spec ./deploy/ --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait

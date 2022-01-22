@@ -1,0 +1,15 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+name: mvc
+region: fra
+services:
+- name: mvc
+  image:
+    registry_type: DOCR
+    repository: dnw
+    tag: latest
+  envs:
+    - key: ASPNETCORE_ENVIRONMENT
+      scope: RUN_AND_BUILD_TIME
+      value: Production
