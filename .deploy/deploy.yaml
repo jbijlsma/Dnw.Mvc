@@ -10,8 +10,8 @@ services:
   instance_size_slug: basic-xs
   image:
     registry_type: DOCR
-    repository: dnw
-    tag: mvc:latest
+    repository: registry.digitalocean.com/dnw/mvc
+    tag: latest
   envs:
     - key: ASPNETCORE_ENVIRONMENT
       scope: RUN_AND_BUILD_TIME
