@@ -10,7 +10,7 @@ services:
   instance_size_slug: basic-xs
   image:
     registry_type: DOCR
-    repository: registry.digitalocean.com/dnw/mvc
+    repository: mvc
     tag: latest
   envs:
     - key: ASPNETCORE_ENVIRONMENT
