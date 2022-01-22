@@ -26,7 +26,7 @@
           run: docker build -t registry.digitalocean.com/dnw/mvc:latest .
   
         - name: Push to Digital Ocean Registry
-          run: docker push registry.digitalocean.com/myregistry/mvc:latest
+          run: docker push registry.digitalocean.com/dnw/mvc:latest
 
-        - name: Provision Droplet and deploy container
-          run: doctl apps create --spec ./deploy/ --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
+        - name: Redeploy app
+          run: doctl apps create --spec ./deploy/deploy.yml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
