@@ -18,6 +18,7 @@
           run: |
             pwd
             ls -la
+            cat ./.deploy/deploy.yaml
 #
 #        - name: Install doctl
 #          uses: digitalocean/action-doctl@v2
@@ -34,4 +35,4 @@
 #          run: docker push registry.digitalocean.com/dnw/mvc:latest
 #
 #        - name: Redeploy app
-#          run: doctl apps create --spec ./deploy/deploy.yml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
+#          run: doctl apps create --spec ./.deploy/deploy.yml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
