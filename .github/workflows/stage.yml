@@ -6,8 +6,11 @@
         - master
           
   env:
-    REGISTRY: registry.digitalocean.com/dnw/
-    IMAGE_TAG: dnw2022/mvc:latest 
+    REGISTRY: registry.digitalocean.com/dnw
+    REPO: dnw2022
+    IMAGE: docker-react
+    DOCKERFILE: Dockerfile
+    TAG: latest
         
   jobs:
     build:
@@ -24,22 +27,36 @@
 #            ls -la
 #            cat ./.deploy/deploy.yaml
 
-        - name: Install doctl
-          uses: digitalocean/action-doctl@v2
-          with:
-            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Set environment variables
+        run: |
+          echo 'IMAGE_TAG="${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}"' >> $GITHUB_ENV
+          echo 'DO_TAG="${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.IMAGE }}-${{ env.TAG }}"' >> $GITHUB_ENV
 
-        - name: Login to Digital Ocean Registry
-          run: doctl registry login --expiry-seconds 600    
+      - name: Display environment variables
+        run: |
+          echo "IMAGE_TAG = ${{ env.IMAGE_TAG }}"
+          echo "DO_TAG = ${{ env.DO_TAG }}"
 
-        - name: Create deploy image
-          run: docker build -t dnw2022/mvc:latest -f Dockerfile .
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          
+      - name: Login to Digital Ocean Registry
+        run: doctl registry login --expiry-seconds 600
 
-        - name: Tag image
-          run: docker image tag dnw2022/mvc:latest registry.digitalocean.com/dnw/dnw2022:mvc-latest
+      - name: Create deploy image
+        run: |
+          # run: docker build -t dnw2022/mvc:latest -f Dockerfile .
+          docker build -t ${{ env.IMAGE_TAG }} -f ${{ env.DOCKERFILE }} .
 
-        - name: Push deploy image to Digital Ocean Registry
-          run: docker push registry.digitalocean.com/dnw/dnw2022:mvc-latest
+      - name: Push deploy image to Digital Ocean Registry
+        run: |
+          # docker image tag dnw2022/mvc:latest registry.digitalocean.com/dnw/dnw2022:mvc-latest
+          docker image tag ${{ env.IMAGE_TAG }} ${{ env.DO_TAG }}
 
-        - name: Redeploy app
-          run: doctl apps create --spec ./.deploy/deploy.yaml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait
+          # docker push registry.digitalocean.com/dnw/dnw2022:mvc-latest
+          docker push ${{ env.DO_TAG }}
+
+      - name: Redeploy app
+        run: doctl apps create --spec ./.deploy/deploy.yaml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait

@@ -4,7 +4,7 @@ alerts:
 name: mvc
 region: fra
 services:
-- name: aspnetapp
+- name: mvc
   http_port: 80
   instance_count: 1
   instance_size_slug: basic-xs
