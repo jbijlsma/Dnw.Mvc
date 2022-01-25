@@ -4,6 +4,10 @@
     push:
       branches:
         - master
+          
+  env:
+    REGISTRY: registry.digitalocean.com/dnw/
+    IMAGE_TAG: dnw2022/mvc:latest 
         
   jobs:
     build:
@@ -28,11 +32,14 @@
         - name: Login to Digital Ocean Registry
           run: doctl registry login --expiry-seconds 600    
 
-        - name: Build latest
-          run: docker build -t registry.digitalocean.com/dnw/mvc:latest .
+        - name: Create deploy image
+          run: docker build -t dnw2022/mvc:latest -f Dockerfile .
 
-        - name: Push to Digital Ocean Registry
-          run: docker push registry.digitalocean.com/dnw/mvc:latest
+        - name: Tag image
+          run: docker image tag dnw2022/mvc:latest registry.digitalocean.com/dnw/dnw2022:mvc-latest
+
+        - name: Push deploy image to Digital Ocean Registry
+          run: docker push registry.digitalocean.com/dnw/dnw2022:mvc-latest
 
         - name: Redeploy app
           run: doctl apps create --spec ./.deploy/deploy.yaml --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --upsert --wait

@@ -10,8 +10,8 @@ services:
   instance_size_slug: basic-xs
   image:
     registry_type: DOCR
-    repository: mvc
-    tag: latest
+    repository: dnw2022
+    tag: mvc-latest
   envs:
     - key: ASPNETCORE_ENVIRONMENT
       scope: RUN_AND_BUILD_TIME
