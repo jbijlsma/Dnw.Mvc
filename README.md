@@ -8,7 +8,7 @@
   docker buildx build --platform linux/amd64 -f Dockerfile -t mvc .
 
   # To run using docker
-  docker run -it --rm -p 8000:80 mvc
+  docker run -it --rm -p 8000:80 dnw2022/mvc
 
   # Or with kubernetes (check http ingress config)
   kubectl apply -f k8s
