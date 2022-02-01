@@ -25,3 +25,10 @@ Base64 encode the json file:
 cat multi-k8s-339908-e1853ea369e6.json | base64
 
 And add base64 string as secret to github repo
+
+# cert-manager ingress certificate generation
+
+cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+
+The ingress-shim component of cert-manager watches ingress resources 
+and automatically creates Certificate resources. The alternative is to create explicit Certificate objects.
