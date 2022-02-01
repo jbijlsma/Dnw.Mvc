@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnetapp", "aspnetapp\aspn
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{C5D9A026-D1C0-48FA-966A-029E4118C324}"
 	ProjectSection(SolutionItems) = preProject
-		Read.MD = Read.MD
+		README.md = README.md
 		Dockerfile = Dockerfile
-		DockerfileLinux-musl-x64 = DockerfileLinux-musl-x64
+		Dockerfile.dev = Dockerfile.dev
 	EndProjectSection
 EndProject
 Global
