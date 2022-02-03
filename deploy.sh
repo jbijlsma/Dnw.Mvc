@@ -5,4 +5,4 @@ docker push dnw2022/aspnetapp:latest
 kubectl apply -f k8s
 
 kubectl rollout restart deployment/aspnetapp-deployment
-kubectl rollout restart deployment/my-release-ingress-nginx-controller
+#kubectl rollout restart deployment/my-release-ingress-nginx-controller
