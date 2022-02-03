@@ -1,4 +1,4 @@
-  name: Build and deploy
+  name: Deploy to Digital Ocean App Service
   
   on:
     push:
