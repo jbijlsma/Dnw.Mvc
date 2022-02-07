@@ -10,6 +10,8 @@ env:
   DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
   AKS_CLUSTER_NAME: 'cluster-dnw-aks'
   AKS_RESOURCE_GROUP: 'rg-dnw'
+  AKS_ACR_NAME: 'acrdnw'
+  AKS_ACR_LOGIN_SERVER: 'acrdnw.azurecr.io'
 
 jobs:
   build-and-deploy:
@@ -29,26 +31,35 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # https://github.com/Azure/setup-kubectl
-      - name: Kubectl tool installer
-        uses: Azure/setup-kubectl@v2.0
-        with:
-          version: 'v1.21.7'
-
-      # https://github.com/Azure/aks-set-context
-      # This is a pre-release and it will not show up in the marketplace directly
-      # If you go to the marketplace with the link in the repo you will see it
-      - name: Set Context for Azure Kubernetes Cluster using azure/aks-set-context@v1 action
-        uses: azure/aks-set-context@v1
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
-          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
-
-      - name: Give execute permissions for shell script
+          
+      - name: Try to access Azure Container Registry
         run: |-
-          chmod +x ./deploy.sh
-
-      - name: Deploy to AKS
-        run: ./deploy.sh
+          az acr login --name $AKS_ACR_NAME
+          az acr repository list --name $AKS_ACR_NAME --output table
+          #docker build -t dnw2022/aspnetapp:latest -f ./Dockerfile .
+          # ACR_TAG = "${{ env.AKS_ACR_LOGIN_SERVER }}/aspnetapp:latest"
+          #docker tag dnw2022/aspnetapp:latest ACR_TAG
+          #docker push ACR_TAG
+          
+#      # https://github.com/Azure/setup-kubectl
+#      - name: Kubectl tool installer
+#        uses: Azure/setup-kubectl@v2.0
+#        with:
+#          version: 'v1.21.7'
+#
+#      # https://github.com/Azure/aks-set-context
+#      # This is a pre-release and it will not show up in the marketplace directly
+#      # If you go to the marketplace with the link in the repo you will see it
+#      - name: Set Context for Azure Kubernetes Cluster using azure/aks-set-context@v1 action
+#        uses: azure/aks-set-context@v1
+#        with:
+#          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+#          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+#          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+#
+#      - name: Give execute permissions for shell script
+#        run: |-
+#          chmod +x ./deploy.sh
+#
+#      - name: Deploy to AKS
+#        run: ./deploy.sh
