@@ -37,9 +37,9 @@ jobs:
         run: |-
           az acr login --name $AKS_ACR_NAME
           az acr repository list --name $AKS_ACR_NAME --output table
-          IMAGE_TAG = dnw2022/aspnetapp:latest
+          IMAGE_TAG=dnw2022/aspnetapp:latest
           docker build -t $IMAGE_TAG -f ./Dockerfile .
-          ACR_TAG = "${{ env.AKS_ACR_LOGIN_SERVER }}/aspnetapp:latest"
+          ACR_TAG="${{ env.AKS_ACR_LOGIN_SERVER }}/aspnetapp:latest"
           docker tag $IMAGE_TAG $ACR_TAG
           docker push $ACR_TAG
           az acr repository list --name $AKS_ACR_NAME --output table
