@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: aspnetapp
-        image: dnw2022/aspnetapp
+        image: acrdnw.azurecr.io/aspnetapp:latest
+#        image: dnw2022/aspnetapp
 #        resources:
 #          limits:
 #            memory: "128Mi"
