@@ -7,16 +7,14 @@ on:
       - master
 
 env:
-  DOCKER_ID: dnw2022
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
   DO_ACCESS_TOKEN: ${{ secrets.DO_ACCESS_TOKEN }}
   DO_CLUSTER_NAME: cluster-dnw
   REGISTRY: registry.digitalocean.com
   PRIVATE_REGISTRY: dnw2022
   REPO: dnw2022
-  IMAGE: aspnetapp
+  RELEASE_NAME: aspnetapp
   TAG: latest
-
+    
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -38,7 +36,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
+          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.RELEASE_NAME }}:${{ env.TAG }}' >> $GITHUB_ENV
 
       # https://github.com/marketplace/actions/helm-tool-installer
       - name: Helm tool installer
@@ -58,4 +56,4 @@ jobs:
             --set PrivateContainerRegistry="${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/" \
             --install
           
-          kubectl rollout restart deployment ${{ env.IMAGE }}-deployment
+          kubectl rollout restart deployment ${{ env.RELEASE_NAME }}-deployment
