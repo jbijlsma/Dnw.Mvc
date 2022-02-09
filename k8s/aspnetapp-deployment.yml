@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: aspnetapp
-        image: acrdnw.azurecr.io/aspnetapp:latest
+        image: registry.digitalocean.com/dnw2022/asapnetapp:latest
+#        image: acrdnw.azurecr.io/aspnetapp:latest
 #        image: dnw2022/aspnetapp
 #        resources:
 #          limits:
