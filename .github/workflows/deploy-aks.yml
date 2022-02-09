@@ -12,6 +12,7 @@ env:
   AKS_RESOURCE_GROUP: 'rg-dnw'
   AKS_ACR_NAME: 'acrdnw'
   AKS_ACR_LOGIN_SERVER: 'acrdnw.azurecr.io'
+  RELEASE_NAME: aspnetapp
 
 jobs:
   build-and-deploy:
@@ -52,15 +53,19 @@ jobs:
       - name: Build images and push them to Azure Container Service (ACR)
         run: |-
           az acr login --name $AKS_ACR_NAME
-          az acr repository list --name $AKS_ACR_NAME --output table
-          IMAGE_TAG=dnw2022/aspnetapp:latest
-          docker build -t $IMAGE_TAG -f ./Dockerfile .
-          ACR_TAG="${{ env.AKS_ACR_LOGIN_SERVER }}/aspnetapp:latest"
-          docker tag $IMAGE_TAG $ACR_TAG
+          ACR_TAG="${{ env.AKS_ACR_LOGIN_SERVER }}/${{ env.RELEASE_NAME }}:latest"
+          docker build -t $ACR_TAG -f .
           docker push $ACR_TAG
           az acr repository list --name $AKS_ACR_NAME --output table
 
+      # https://github.com/marketplace/actions/helm-tool-installer
+      - name: Helm tool installer
+        uses: Azure/setup-helm@v2.0
+
       - name: Deploy to AKS
         run: |-
-          kubectl apply -f k8s
-          kubectl rollout restart deployment/aspnetapp-deployment
+          helm upgrade ${{ env.RELEASE_NAME }} ./k8s/helm \
+          --set PrivateContainerRegistry="${{ env.AKS_ACR_LOGIN_SERVER }}/" \
+          --install
+          
+          kubectl rollout restart deployment ${{ env.RELEASE_NAME }}-deployment
