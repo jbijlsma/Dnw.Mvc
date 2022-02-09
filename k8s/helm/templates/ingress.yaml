@@ -5,7 +5,9 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: 'nginx'
     nginx.ingress.kubernetes.io/use-regex: 'true'
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # Rewrite what is send to the backend service
+    # An alternative to pass the sub path to the backend service: nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /
     # Since the tls section has been commented out and we rely on the wildcard certificate this is not needed anymore
     # cert-manager.io/cluster-issuer: 'letsencrypt-prod'
     nginx.ingress.kubernetes.io/ssl-redirect: 'true'
