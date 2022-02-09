@@ -12,6 +12,7 @@ env:
   DO_ACCESS_TOKEN: ${{ secrets.DO_ACCESS_TOKEN }}
   DO_CLUSTER_NAME: cluster-dnw
   REGISTRY: registry.digitalocean.com
+  PRIVATE_REGISTRY: dnw2022
   REPO: dnw2022
   IMAGE: aspnetapp
   TAG: latest
@@ -38,7 +39,7 @@ jobs:
       - name: Set environment variables
         run: |
           echo 'IMAGE_TAG=${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
-          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.REPO }}-${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
+          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.REPO }}-${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
 
       - name: Create images
         run: |-
