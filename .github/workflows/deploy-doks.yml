@@ -57,8 +57,9 @@ jobs:
 
       - name: Deploy to DOKS
         run: |-
-          helm install aspnetapp ./k8s/helm \
+          helm upgrade aspnetapp ./k8s/helm \
             --set PrivateContainerRegistry="${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/"
+            --install 
           
           #kubectl apply -f k8s
           #kubectl rollout restart deployment ${{ env.IMAGE }}-deployment
