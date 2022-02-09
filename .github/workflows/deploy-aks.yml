@@ -7,8 +7,6 @@ on:
       - master
 
 env:
-  DOCKER_ID: dnw2022
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
   AKS_CLUSTER_NAME: 'cluster-dnw-aks'
   AKS_RESOURCE_GROUP: 'rg-dnw'
   AKS_ACR_NAME: 'acrdnw'
@@ -66,7 +64,7 @@ jobs:
       - name: Deploy to AKS
         run: |-
           helm upgrade ${{ env.RELEASE_NAME }} ./k8s/helm \
-          --set PrivateContainerRegistry="${{ env.AKS_ACR_LOGIN_SERVER }}/" \
-          --install
+            --set PrivateContainerRegistry="${{ env.AKS_ACR_LOGIN_SERVER }}/" \
+            --install
           
           kubectl rollout restart deployment ${{ env.RELEASE_NAME }}-deployment
