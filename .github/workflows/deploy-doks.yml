@@ -38,7 +38,7 @@ jobs:
       - name: Set environment variables
         run: |
           echo 'IMAGE_TAG=${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
-          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
+          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.REPO }}-${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
 
       - name: Create images
         run: |-
