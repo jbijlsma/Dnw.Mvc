@@ -39,7 +39,7 @@ jobs:
       - name: Set environment variables
         run: |
           echo 'IMAGE_TAG=${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
-          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.REPO }}-${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
+          echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
 
       # https://github.com/marketplace/actions/helm-tool-installer
       - name: Helm tool installer
