@@ -38,7 +38,6 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo 'IMAGE_TAG=${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
           echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
 
       # https://github.com/marketplace/actions/helm-tool-installer
@@ -47,9 +46,7 @@ jobs:
 
       - name: Create images
         run: |-
-          echo $IMAGE_TAG
-          docker build -t $IMAGE_TAG .
-          docker tag $IMAGE_TAG $REGISTRY_TAG
+          docker build -t $REGISTRY_TAG .
           docker push $REGISTRY_TAG
 
       - name: Save DigitalOcean kubeconfig
