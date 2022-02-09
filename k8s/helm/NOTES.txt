@@ -1,0 +1,10 @@
+helm template './helm' \
+  --output-dir './helm/.yamls' 
+
+helm template './helm' \
+  --set PrivateContainerRegistry="registry.digitalocean.com/dnw2022/" \
+  --output-dir './helm/.yamls' 
+
+helm install aspnetapp ./helm \
+  --set PrivateContainerRegistry="registry.digitalocean.com/dnw2022/" \
+  --dry-run --debug

@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnetapp-deployment
+  name: {{ .Release.Name }}-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aspnetapp
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: aspnetapp
+        app: {{ .Release.Name }}
     spec:
       containers:
-      - name: aspnetapp
-        image: registry.digitalocean.com/dnw2022/dnw2022-aspnetapp:latest
+        - name: {{ .Release.Name }}
+          image: {{ .Values.PrivateContainerRegistry }}{{ .Release.Name }}:latest
 #        image: acrdnw.azurecr.io/aspnetapp:latest
 #        image: dnw2022/aspnetapp
 #        resources:
 #          limits:
 #            memory: "128Mi"
 #            cpu: "500m"
-        ports:
-        - containerPort: 80
+          ports:
+              - containerPort: 80

@@ -41,6 +41,10 @@ jobs:
           echo 'IMAGE_TAG=${{ env.REPO }}/${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
           echo 'REGISTRY_TAG=${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/${{ env.REPO }}-${{ env.IMAGE }}:${{ env.TAG }}' >> $GITHUB_ENV
 
+      # https://github.com/marketplace/actions/helm-tool-installer
+      - name: Helm tool installer
+        uses: Azure/setup-helm@v2.0
+
       - name: Create images
         run: |-
           echo $IMAGE_TAG
@@ -53,6 +57,9 @@ jobs:
 
       - name: Deploy to DOKS
         run: |-
-          kubectl apply -f k8s
+          helm install aspnetapp ./k8s/helm \ 
+            --set PrivateContainerRegistry="${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/"
+          
+          #kubectl apply -f k8s
           kubectl rollout restart deployment ${{ env.IMAGE }}-deployment
           #kubectl rollout restart deployment my-release-ingress-nginx-controller
