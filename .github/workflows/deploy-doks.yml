@@ -58,6 +58,4 @@ jobs:
             --set PrivateContainerRegistry="${{ env.REGISTRY }}/${{ env.PRIVATE_REGISTRY }}/" \
             --install
           
-          #kubectl apply -f k8s
-          #kubectl rollout restart deployment ${{ env.IMAGE }}-deployment
-          #kubectl rollout restart deployment my-release-ingress-nginx-controller
+          kubectl rollout restart deployment ${{ env.IMAGE }}-deployment
