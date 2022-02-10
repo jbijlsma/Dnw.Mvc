@@ -10,9 +10,10 @@ env:
   DOCKER_ID: dnw2022
   DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
   GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
-  GKE_CLUSTER: multi-cluster
-  GKE_ZONE: europe-central2-a
+  GKE_CLUSTER: cluster-dnw-gcloud
+  GKE_ZONE: europe-west3-a
   GKE_SERVICE_ACCOUNT_KEY_FILE_JSON: ${{ secrets.GKE_SERVICE_ACCOUNT_KEY_FILE_JSON }}
+  RELEASE_NAME: aspnetapp
 
 jobs:
   build-and-deploy:
@@ -21,18 +22,30 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Build and push images to Docker Hub
+        run: |-
+          echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
+          TAG="dnw2022/${{ env.RELEASE_NAME }}:latest"
+          docker build -t $TAG .
+          docker push $TAG
+
       - name: Install and configure GK sdk
         run: |-
           curl https://sdk.cloud.google.com | bash > /dev/null;
           source $HOME/google-cloud-sdk/path.bash.inc
           gcloud components update kubectl
-          echo "${{ env.GKE_SERVICE_ACCOUNT_KEY_FILE_JSON }}" | base64 --decode > ./service-account.json
+          echo "${{ secrets.GKE_SERVICE_ACCOUNT_KEY_FILE_JSON }}" | base64 --decode > ./service-account.json
           gcloud auth activate-service-account --key-file service-account.json
-          rm service-account.json
           gcloud config set project "${{ env.GKE_PROJECT_ID }}"
           gcloud config set compute/zone "${{ env.GKE_ZONE }}"
           gcloud container clusters get-credentials "${{ env.GKE_CLUSTER }}"
-          chmod +x ./deploy.sh
+
+      # https://github.com/marketplace/actions/helm-tool-installer
+      - name: Helm tool installer
+        uses: Azure/setup-helm@v2.0
 
       - name: Deploy to GKE
-        run: ./deploy.sh
+        run: |-
+          helm upgrade ${{ env.RELEASE_NAME }} ./k8s/helm --install
+          
+          kubectl rollout restart deployment ${{ env.RELEASE_NAME }}-deployment
