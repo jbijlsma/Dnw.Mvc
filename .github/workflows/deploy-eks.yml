@@ -1,0 +1,59 @@
+name: Deploy to Amazon Elastic Kubernetes Engine (EKS)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_ID: dnw2022
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+  EKS_CLUSTER: cluster-dnw-eks
+  EKS_ACCESS_KEY: ${{ secrets.EKS_ACCESS_KEY }}
+  EKS_ACCESS_KEY_SECRET: ${{ secrets.EKS_ACCESS_KEY_SECRET }}
+  EKS_REGION: eu-central-1
+  RELEASE_NAME: aspnetapp
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.EKS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.EKS_ACCESS_KEY_SECRET }}
+          aws-region: ${{ env.EKS_REGION }}
+
+      - name: Install and configure kubectl and eksctl
+        run: |-
+          curl -fsSL -o kubectl "https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          mv ./kubectl /usr/local/bin
+
+          curl -fsSL -o eksctl.tar.gz "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_linux_amd64.tar.gz"
+          tar x -f eksctl.tar.gz
+          chmod +x eksctl
+          mv ./eksctl /usr/local/bin
+
+          eksctl utils write-kubeconfig --region "${{ env.EKS_REGION }}" --cluster "${{ env.EKS_CLUSTER }}"
+
+      - name: Build and push images to Docker Hub
+        run: |-
+          echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
+          TAG="dnw2022/${{ env.RELEASE_NAME }}:latest"
+          docker build -t $TAG .
+          docker push $TAG
+
+      # https://github.com/marketplace/actions/helm-tool-installer
+      - name: Helm tool installer
+        uses: Azure/setup-helm@v2.0
+
+      - name: Deploy to GKE
+        run: |-
+          helm upgrade ${{ env.RELEASE_NAME }} ./k8s/helm --install
+          
+          kubectl rollout restart deployment ${{ env.RELEASE_NAME }}-deployment
